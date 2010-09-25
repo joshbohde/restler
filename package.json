@@ -9,9 +9,6 @@
       "type" : "git",
       "url" : "git://github.com/aaronblohowiak/restler.git"
     },
-    
-    "dependencies": {
-    }
-    
+    "main": "./index.js"
 }
 

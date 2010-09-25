@@ -1,4 +1,4 @@
-var test = require('mjsunit'),
+var test = require('./mjsunit'),
     http  = require("http"),
     sys  = require('sys');
 

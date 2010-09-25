@@ -1,3 +1,7 @@
+Why this fork?
+=======
+This fork exists because I didnt want GPL code in a project that I was working on, so I removed the offending code from restler.  Also, I made the tests use nodes assert instead of mjsunit.  The tests still hang, so someone can investigate that.  Eventually, Id like to see the tests converted to expresso.
+
 Restler
 =======
 

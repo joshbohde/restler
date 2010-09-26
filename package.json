@@ -3,7 +3,7 @@
     "author": "i(C) Dan Webb (dan@danwebb.net/@danwrong) 2009, Aaron Blohowiak <aaron.blohowiak@gmail.com>",
     "description": "pure-MIT fork of restler.",
     "keywords": ["restler", "MIT", "restful", "REST", "http client"],
-    "version": "0.0.1",
+    "version": "0.0.2",
     "homepage": "http://github.com/aaronblohowiak/restler",
     "repository" : { 
       "type" : "git",

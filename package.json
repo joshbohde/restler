@@ -1,14 +1,17 @@
 {
-    "name": "restler-aaronblohowiak",
+    "name": "restler-joshbohde",
     "author": "i(C) Dan Webb (dan@danwebb.net/@danwrong) 2009, Aaron Blohowiak <aaron.blohowiak@gmail.com>",
     "description": "pure-MIT fork of restler.",
     "keywords": ["restler", "MIT", "restful", "REST", "http client"],
     "version": "0.0.2",
-    "homepage": "http://github.com/aaronblohowiak/restler",
+    "homepage": "http://github.com/joshbohde/restler",
     "repository" : { 
       "type" : "git",
-      "url" : "git://github.com/aaronblohowiak/restler.git"
+      "url" : "git://github.com/joshbohde/restler.git"
     },
-    "main": "./index.js"
+    "main": "./index.js",
+    "dependencies": {
+      "xml2js" : "0.1.5"
+    }
 }
 

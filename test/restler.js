@@ -128,9 +128,7 @@ helper.testCase("Deserialization Tests", helper.dataServer, {
     rest.get(host, {
       headers: { 'Accepts': 'application/xml' }
     }).addListener('complete', function(data) {
-      //assert.equal("true", data.document.ok, "returned " + sys.inspect(data));
-      console.log("removed xml2json to remove GPL code. should parse xml is broken")
-      //assert.equal("true", false, "returned " + sys.inspect(data));
+      assert.equal("true", data.ok, "returned " + sys.inspect(data));
     });
   },
   testAutoSerializerShouldParseYAML: function(host, test) {

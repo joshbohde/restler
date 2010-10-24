@@ -50,7 +50,7 @@ var firesEvent = function(event){
     };
     context['fires event ' + event] = function(data, response){};
     return context;
-}
+};
 
 var handlesMethod = function(method){
     var host = helper.echoServer()[0];
@@ -63,6 +63,21 @@ var handlesMethod = function(method){
     context['request should be a ' + method] = requestContains(new RegExp('^' + method));
     return context;    
 };
+
+var deserialize = function(value){
+    var host = helper.dataServer()[0];
+    var context = {
+        topic: function(){
+            var accepts = 'application/' + this.context.name.split(/ +/)[0].toLowerCase();
+            rest.get(host, {headers: {'Accepts': accepts}}).addListener('complete', 
+                                                                        this.callback);
+        }
+    };
+    context['should have a value of ' + value] = function(data, response){
+        assert.equal(value, data.ok);
+    };
+    return context;
+}
 
 vows.describe('The REST Client').addBatch({
     'The HTTP client': {
@@ -115,6 +130,16 @@ vows.describe('The REST Client').addBatch({
         '404 fires error': firesEvent('error'),
         '404 fires 4XX': firesEvent('4XX'),
         '404 fires 404': firesEvent('404')
-    }
-
+    },
+    'Request in the form': {
+        'XML should deserialize': deserialize('true'),
+        'YAML should deserialize': deserialize(true),
+        'JSON should deserialize': deserialize(true)
+    },
+    'Redirected requests': {
+        topic: function(){
+            rest.get(helper.redirectServer()[0]).addListener('complete', this.callback);
+        },
+        'should be followed': requestContains(/Hell Yeah!/)
+    }                                          
 }).export(module)

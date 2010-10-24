@@ -56,7 +56,7 @@ var handlesMethod = function(method){
     var host = helper.echoServer()[0];
     var context = {
         topic: function(){
-            var r = rest[this.context.name.split(/ +/)[5].toLowerCase()](host);
+            var r = rest[this.context.name.split(/ +/)[4].toLowerCase()](host);
             r.addListener('complete', this.callback);
         }
     };
@@ -64,52 +64,57 @@ var handlesMethod = function(method){
     return context;    
 };
 
-vows.describe('Basic Tests').addBatch({
-    'request can take a path': takesURLs('/thing'),
-    'request can take an empty path': takesURLs(''),
-    'request preserve query string': takesURLs('/thing?boo=yah'),
-    'request should be able to GET': handlesMethod('GET'),
-    'request should be able to PUT': handlesMethod('PUT'),
-    'request should be able to POST': handlesMethod('POST'),
-    'request should be able to DEL': handlesMethod('DELETE'),
-    'request should serialize query': {
-        topic: restTopic('get', {query: {q: 'balls'}}),
-        'should hit /?q=balls': requestContains(/^GET \/\?q\=balls/)
+vows.describe('The REST Client').addBatch({
+    'The HTTP client': {
+        'can take a path': takesURLs('/thing'),
+        'can take an empty path': takesURLs(''),
+        'preserve query string': takesURLs('/thing?boo=yah'),
+        'should be able to GET': handlesMethod('GET'),
+        'should be able to PUT': handlesMethod('PUT'),
+        'should be able to POST': handlesMethod('POST'),
+        'should be able to DEL': handlesMethod('DELETE'),
+        'should serialize query': {
+            topic: restTopic('get', {query: {q: 'balls'}}),
+            'should hit /?q=balls': requestContains(/^GET \/\?q\=balls/)
+        },
+        'should post body': {
+            topic: restTopic('post', {data: 'balls'}),
+            'should have balls in the body': requestContains(/\r\n\r\nballs/)
+        },
+        'should serialize post body': {
+            topic: restTopic('post', { data: { q: 'balls' } }),
+            'should set content-type': requestContains(/content-type\: application\/x-www-form-urlencoded/),
+            'should set content-length': requestContains(/content-length\: 7/),
+            'should have balls in the body': requestContains(/\r\n\r\nq=balls/)
+        },
+        'should send headers': {
+            topic: restTopic('get',{headers: { 'Content-Type': 'application/json' }}),
+            'should have set the header': requestContains(
+                    /content\-type\: application\/json/)        
+        },
+        'should send basic auth': {
+            topic: restTopic('post', { username: 'danwrong', password: 'flange' }),
+            'should set the auth header': requestContains(
+                    /authorization\: Basic ZGFud3Jvbmc6Zmxhbmdl/)
+        },
+        'should send multipart requests': {
+            topic: restTopic('post', {
+                                 data: { a: 1, b: 'thing' },
+                                 multipart: true
+                             }),
+            'should set content type': requestContains(
+                    /content-type\: multipart\/form-data/),
+            'should send a=1': requestContains(/name="a"(\s)+1/),
+            'should send b=thing': requestContains(/name="b"(\s)+thing/)
+        }                                      
+
     },
-    'request should post body': {
-        topic: restTopic('post', {data: 'balls'}),
-        'should have balls in the body': requestContains(/\r\n\r\nballs/)
-    },
-    'request should serialize post body': {
-        topic: restTopic('post', { data: { q: 'balls' } }),
-        'should set content-type': requestContains(/content-type\: application\/x-www-form-urlencoded/),
-        'should set content-length': requestContains(/content-length\: 7/),
-        'should have balls in the body': requestContains(/\r\n\r\nq=balls/)
-    },
-    'request should send headers': {
-        topic: restTopic('get',{headers: { 'Content-Type': 'application/json' }}),
-        'should have set the header': requestContains(
-                /content\-type\: application\/json/)        
-    },
-    'request should send basic auth': {
-        topic: restTopic('post', { username: 'danwrong', password: 'flange' }),
-        'should set the auth header': requestContains(
-                /authorization\: Basic ZGFud3Jvbmc6Zmxhbmdl/)
-    },
-    '200 fires 2XX': firesEvent('2XX'),
-    '200 fires 200': firesEvent('200'),
-    '404 fires error': firesEvent('error'),
-    '404 fires 4XX': firesEvent('4XX'),
-    '404 fires 404': firesEvent('404'),
-    'multipart request with simple vars': {
-        topic: restTopic('post', {
-                             data: { a: 1, b: 'thing' },
-                             multipart: true
-                         }),
-        'should set content type': requestContains(
-                /content-type\: multipart\/form-data/),
-        'should send a=1': requestContains(/name="a"(\s)+1/),
-        'should send b=thing': requestContains(/name="b"(\s)+thing/)
-    }                                      
+    'Request with status': {
+        '200 fires 2XX': firesEvent('2XX'),
+        '200 fires 200': firesEvent('200'),
+        '404 fires error': firesEvent('error'),
+        '404 fires 4XX': firesEvent('4XX'),
+        '404 fires 404': firesEvent('404')
+    }
 
 }).export(module)

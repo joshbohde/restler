@@ -1,7 +1,3 @@
-Why this fork?
-=======
-This fork exists because I didnt want GPL code in a project that I was working on, so I removed the offending code from restler.  Also, I made the tests use nodes assert instead of mjsunit.  The tests still hang, so someone can investigate that.  Eventually, Id like to see the tests converted to expresso.
-
 Restler
 =======
 
@@ -150,18 +146,13 @@ Example usage
     
 Running the tests
 -----------------
+Install [vows](http://github.com/cloudhead/vows)
 
-    node test/restler.js
+  vows test/vows.js
     
     
-TODO
-----
-* replace xml2json with own implementation
-* What do you need? Let me know or fork.
-
-
 Acknowledgements
 ----------------
 
-Restler uses base64, querystring and uri from Narwhal, yaml by TJ Holowaychuk and xml2json by Thomas Frank.  See each of the files
+Restler uses base64, querystring and uri from Narwhal, yaml by TJ Holowaychuk and [node-xml2js](http://github.com/maqr/node-xml2js] by maqr.  See each of the files
 in the vendor directory for their licences.
